@@ -1,0 +1,52 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>{{mode}} Recipe</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()">
+    <ion-list>
+      <ion-item>
+        <ion-label floating>Title</ion-label>
+        <ion-input formControlName="title" type="text"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Description</ion-label>
+        <ion-textarea formControlName="description"></ion-textarea>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Difficulty</ion-label>
+        <ion-select formControlName="difficulty">
+          <ion-option *ngFor="let option of selectOptions" [value]="option">{{option}}</ion-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
+    <button type="button" clear ion-button block (click)="manageIngredients()">Manage Ingredients</button>
+    <ion-grid formArrayName="ingredients">
+      <ion-row>
+        <ion-col col-6>
+          <strong>Ingredient</strong>
+        </ion-col>
+        <ion-col col-6>
+          <strong>Amount</strong>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngFor="let ingredientControl of recipeForm.get('ingredients').controls; let i = index" [formGroupName]="i" style="border-bottom: 1px solid darkgray">
+        <ion-col col-6>
+          <ion-input type="text" formControlName="name" placeholder="Ingredient"></ion-input>
+        </ion-col>
+        <ion-col col-4>
+          <ion-input type="number" formControlName="amount" placeholder="Amount"></ion-input>
+        </ion-col>
+        <ion-col col-2>
+          <button ion-button small color="danger" (click)="removeIngredient(i)"><ion-icon name="trash"></ion-icon></button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <button ion-button block type="submit" [disabled]="!recipeForm.valid">Save Recipe</button>
+  </form>
+</ion-content>

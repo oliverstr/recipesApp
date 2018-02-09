@@ -1,0 +1,23 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="newRecipe()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title>Recipes</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-list>
+    <button ion-item *ngFor="let recipe of recipesList" (click)="viewRecipe(recipe)">
+      <small style="float: right">{{recipe.difficulty}}</small>
+      <h2>{{recipe.title}}</h2>
+      <p>{{recipe.description}}</p>
+    </button>
+  </ion-list>
+</ion-content>

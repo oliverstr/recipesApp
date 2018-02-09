@@ -1,0 +1,38 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Shopping List</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="logOut()">
+        <ion-icon name="log-out"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+  <form #f="ngForm" (ngSubmit)="onSubmit(f)">
+    <ion-list>
+      <ion-item>
+        <ion-label fixed>Name</ion-label>
+        <ion-input type="text" name="ingredientName" placeholder="Milk" [(ngModel)]="selectedItem.name" required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label fixed>Amount</ion-label>
+        <ion-input type="number" name="amount" placeholder="2" [(ngModel)]="selectedItem.amount" required></ion-input>
+      </ion-item>
+    </ion-list>
+    <button ion-button type="submit" block [disabled]="!f.valid">Add</button>
+  </form>
+  <ion-list>
+    <ion-list-header>
+      Ingredients
+    </ion-list-header>
+    <ion-item *ngFor="let item of shoppingList" (click)="editItem(item)">
+      <h3>{{ item.name }}</h3>
+      <p>Amount: {{ item.amount }}</p>
+      <button ion-button item-end color="danger" (click)="removeItem(item)"><ion-icon name="trash"></ion-icon></button>
+    </ion-item>
+  </ion-list>
+</ion-content>
