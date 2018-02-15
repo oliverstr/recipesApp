@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable } from "rxjs/Observable";
+import { User } from "../models/user.model";
 
 @Injectable()
 export class ConnectionService{
@@ -8,6 +9,9 @@ export class ConnectionService{
     constructor(private _http: HttpClient){}
 
     protected SERVER_ADDRESS = 'https://pure-mountain-14455.herokuapp.com';
+    // protected SERVER_ADDRESS = 'http://localhost:5000';
+    loggerUser: User;
+
     httpHeaders: HttpHeaders = new HttpHeaders({'x-access-token': localStorage.getItem('token')} );
 
     signIn(email: string, password: string): Observable<any>{
@@ -26,11 +30,15 @@ export class ConnectionService{
         return this._http.post(this.SERVER_ADDRESS + address, item ,{ headers: this.httpHeaders});
     }
 
-    removeItem(address: string, id: number): Observable<any>{
+    saveItem(address: string, item: any): Observable<any>{
+        return this._http.post(this.SERVER_ADDRESS + address, item ,{ headers: this.httpHeaders});
+    }
+
+    removeItem(address: string, id: string): Observable<any>{
         return this._http.delete(this.SERVER_ADDRESS + address + '/' + id, { headers: this.httpHeaders});
     }
 
-    updateItem(address: string, item: any, id: number): Observable<any>{
+    updateItem(address: string, item: any, id: string): Observable<any>{
         return this._http.put(this.SERVER_ADDRESS + address + '/' + id, item ,{ headers: this.httpHeaders});
     }
 

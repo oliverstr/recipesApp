@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, LoadingController, AlertController } from 'ionic-angular';
 import { TabsPage } from '../tabs/tabs';
 import { SignUpPage } from '../sign-up/sign-up';
-import { NgForm } from '@angular/forms';
 import { ConnectionService } from '../../services/connection.service';
 
 @IonicPage()
@@ -28,6 +27,7 @@ export class SignInPage {
     loading.present();
     this._connService.signIn(value['email'], value['password']).subscribe((response) => {
       localStorage.setItem('token',response.headers.get('x-access-token'));
+      this._connService.loggerUser = JSON.parse(response.body);
       loading.dismiss();
       this._navCtrl.setRoot(TabsPage);
     }, err => {

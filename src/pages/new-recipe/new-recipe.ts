@@ -3,7 +3,6 @@ import { IonicPage, NavParams, ActionSheetController, AlertController, ToastCont
 import { FormGroup, Validators, FormArray, FormBuilder } from '@angular/forms';
 import { RecipeService } from '../../services/recipes.service';
 import { Ingredient } from '../../models/ingredient.model';
-import { shoppingService } from '../../services/shooping.service';
 import { Recipe } from '../../models/recipe.model';
 
 @IonicPage()
@@ -24,7 +23,6 @@ export class NewRecipePage implements OnInit{
     private _alertCtrl: AlertController, 
     private _toastCtrl: ToastController,
     private _recipesService: RecipeService,
-    private _ingredientService: shoppingService,
     private _navCtrl: NavController,
     private _formBuilder: FormBuilder
   ) {
@@ -135,13 +133,26 @@ export class NewRecipePage implements OnInit{
 
   onSubmit(){
     const values = this.recipeForm.value;
-    values.ingredients = values.ingredients.map(ingredient => new Ingredient(ingredient.name, ingredient.amount, this._ingredientService.ingredientId++));
+    // values.ingredients = values.ingredients.map(ingredient => new Ingredient(ingredient.name, ingredient.amount, this._ingredientService.ingredientId++));
     if(this.mode == 'Edit'){
-      this._recipesService.editRecipe(this.editingRecipe.id, values.title, values.description, values.difficulty, values.ingredients);
+      this._recipesService.editRecipe(this.editingRecipe._id, values.title, values.description, values.difficulty, values.ingredients).subscribe(
+        () => this._navCtrl.popToRoot(),
+        (error) => this.showAlert('Error!', error.message )
+      );
     }else{
-      this._recipesService.addRecipe(values.title, values.description, values.difficulty, values.ingredients);
+      this._recipesService.addRecipe(values.title, values.description, values.difficulty, values.ingredients).subscribe(
+        () => this._navCtrl.popToRoot(),
+        (error) => this.showAlert('Error!', error.message )
+      );
     }
-    this._navCtrl.popToRoot();
+  }
+  
+  private showAlert(title: string, message: string){
+    this._alertCtrl.create({
+      title: title,
+      message: message,
+      buttons: ['Ok']
+    }).present();
   }
 
 }

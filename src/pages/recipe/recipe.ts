@@ -28,8 +28,17 @@ export class RecipePage {
   }
 
   shoppingList(){
-    this._shoppingService.addShoppingItems(this.recipe.ingredients);
-    this._navCtrl.parent.select(0);
+    // this._shoppingService.addShoppingItems(this.recipe.ingredients);
+    this._shoppingService.getShoppingList().subscribe(
+      data => {
+        data.shoppingList.ingredients.push(...this.recipe.ingredients);
+        this._shoppingService.saveShopping(data.shoppingList).subscribe(
+          () => this._navCtrl.parent.select(0),
+          error => this.showAlert('Error', error.message)    
+        )
+      }, 
+      error => this.showAlert('Error', error.message)
+    );
   }
 
   editRecipe(){
@@ -41,11 +50,21 @@ export class RecipePage {
       title: 'Delete this recipe?',
       buttons: [
         { text: 'Ok', handler: () => {
-          this._recipeService.removeRecipe(this.recipe);
-          this._navCtrl.pop();
+          this._recipeService.removeRecipe(this.recipe).subscribe(
+            () => this._navCtrl.pop(),
+            error => this.showAlert('Error!', error.message )
+          )
         }},
         { text: 'Cancel', role: 'cancel' }
       ]
+    }).present();
+  }
+
+  private showAlert(title: string, message: string){
+    this._alertCtrl.create({
+      title: title,
+      message: message,
+      buttons: ['Ok']
     }).present();
   }
 

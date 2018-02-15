@@ -1,30 +1,31 @@
 import { Injectable } from "@angular/core";
 import { Recipe } from "../models/recipe.model";
 import { Ingredient } from "../models/ingredient.model";
+import { ConnectionService } from "./connection.service";
+import { Observable } from "rxjs/Observable";
 
 @Injectable()
 export class RecipeService{
 
-    private _recipesList: Recipe[] = [];
-    private counter: number = 0;
+    protected ADDRESS = '/recipe';
 
-    constructor() {};
+    constructor(private _connService: ConnectionService) {};
 
-    addRecipe(title: string, description: string, difficulty: string, ingredients: Ingredient[]){
-        this._recipesList.push(new Recipe(this.counter++, title, description, difficulty, ingredients));
+    addRecipe(title: string, description: string, difficulty: string, ingredients: Ingredient[]): Observable<Recipe>{
+        return this._connService.addItem(this.ADDRESS, new Recipe(title, description, difficulty, ingredients, this._connService.loggerUser));
     }
 
-    removeRecipe(recipe: Recipe){
-        this._recipesList = this._recipesList.filter(item => item.id != recipe.id);
+    removeRecipe(recipe: Recipe): Observable<any>{
+        return this._connService.removeItem(this.ADDRESS, recipe._id);
     }
 
-    editRecipe(id: number, title: string, description: string, difficulty: string, ingredients: Ingredient[]){
-        const index = this._recipesList.findIndex(item => item.id == id);
-        this._recipesList[index] = new Recipe(id, title, description, difficulty, ingredients);
+    editRecipe(id: string, title: string, description: string, difficulty: string, ingredients: Ingredient[]): Observable<any>{
+        return this._connService.updateItem(this.ADDRESS, new Recipe(title, description, difficulty, ingredients, this._connService.loggerUser, id), id);
     }
 
-    get recipeList(): Recipe[]{
-        return this._recipesList.slice();
+    getRecipeList(): Observable<Recipe[]>{
+        return this._connService.getList(this.ADDRESS + '/user/' + this._connService.loggerUser._id);
+
     }
 
 
